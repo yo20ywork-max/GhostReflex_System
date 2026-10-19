@@ -6,7 +6,7 @@
 
 ## Windows 一鍵啟動
 
-Windows EXE 與中文語音元件見 [GitHub Releases](https://github.com/yo20ywork-max/GhostReflex_System/releases)。
+Windows EXE 與中文語音元件見 [v0.1.1 預覽發行](https://github.com/yo20ywork-max/GhostReflex_System/releases/tag/v0.1.1-windows-20261019)。
 請下載該版本的 **GhostReflex-Setup.exe**；首次開啟會自動安裝程式、Ollama、
 既有對話模型、Paraformer 中文辨識與瀏覽器元件。首次需連網下載約 8 GB，
 請保留至少 25 GB 可用空間；不需要另外安裝 Python 或登入帳號。
