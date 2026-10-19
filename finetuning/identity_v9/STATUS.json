@@ -1,0 +1,11 @@
+{
+  "status": "withdrawn_by_user_direction",
+  "eligible_for_training": false,
+  "replacement": "finetuning/identity_v10/README.md",
+  "model_evaluated": true,
+  "development_passed": 6,
+  "development_total": 10,
+  "merged_into_training_bundle": false,
+  "training_started": false,
+  "historical_evidence_preserved": true
+}

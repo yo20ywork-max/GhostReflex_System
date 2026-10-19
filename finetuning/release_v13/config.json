@@ -1,0 +1,29 @@
+{
+  "base": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+  "seed": 20260906,
+  "epochs": 3,
+  "learning_rate": 2e-05,
+  "rank": 32,
+  "alpha": 64,
+  "target_modules": "all-linear",
+  "gradient_accumulation": 8,
+  "warmup_ratio": 0.05,
+  "max_length": 12288,
+  "retention_kl_weight": 0.0,
+  "retention_positions": 16,
+  "max_train_seconds": 10800,
+  "max_retention_dev_nll_increase": 0.25,
+  "release_status": "prepared_not_trained",
+  "answer_logits_only": true,
+  "bf16_autocast": true,
+  "longest_sample_preflight": true,
+  "draft_notes": {
+    "initialization": "Fresh rank32 adapter on the same pinned original base; no reuse of failed adapters.",
+    "data": "All original1633 training rows preserved; 88 uncued identity,28 action contrasts,50 history/quotation contrasts added.",
+    "optimizer_choice": "Same learning rate2e-5, rank32, global batch8 and3 full epochs as prior run, to measure this data revision without simultaneous optimizer changes.",
+    "limitations": "Local data readiness only. New full-size GPU preflight, trained artifacts and all release gates remain unproven."
+  },
+  "release_thresholds_file": "RELEASE_GATES.json",
+  "release_selection": "Generation, artifact and semantic gates required; development NLL is diagnostic only."
+}

@@ -1,0 +1,1 @@
+"""CrossGen desktop application shell."""

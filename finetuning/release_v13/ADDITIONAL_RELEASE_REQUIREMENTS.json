@@ -1,0 +1,13 @@
+{
+  "source": "PROJECT_GOALS.md persistent user requirements; original RELEASE_GATES.json unchanged",
+  "neutral_weight_identity": {
+    "cases": 16,
+    "required_pass": 16,
+    "system_excludes_product_facts": true,
+    "package_default_is_separate": true,
+    "require_upstream_mention": false
+  },
+  "full_request_wait_order": "Check observed order against original requests; final result alone cannot erase premature reads.",
+  "missing_or_untested_is_not_pass": true,
+  "release_approved": false
+}

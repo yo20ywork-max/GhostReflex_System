@@ -1,0 +1,10 @@
+{
+  "status": "superseded_by_user_identity_requirement",
+  "launch_allowed": false,
+  "affected": ["candidate-data-v2", "training-bundle-v1"],
+  "replacement": "finetuning/identity_v10/README.md",
+  "reason": "User removed upstream attribution from identity training and model-answer acceptance requirements. Old v8 identity data and gates are obsolete for the next run.",
+  "locked_bundle_modified": false,
+  "historical_results_reclassified": false,
+  "replacement_launch_ready": false
+}

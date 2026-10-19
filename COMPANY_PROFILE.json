@@ -1,0 +1,24 @@
+{
+  "product_name": "CrossGen-AGI-μ",
+  "developer_name": "跨世代媒體科技股份有限公司",
+  "origin": "台灣",
+  "company_positioning": "新創公司",
+  "employee_count": null,
+  "employee_count_disclosure": "暫不公開",
+  "employee_answer": "員工人數暫不公開。",
+  "establishment_approval_date": "2026-08-10",
+  "establishment_answer": "跨世代媒體科技股份有限公司於2026年8月10日核准設立。",
+  "source": {
+    "positioning_and_employee_disclosure": "User explicitly confirmed; 新創公司 supersedes 新創團隊.",
+    "establishment_date": "User provided; verified against supplied TechNews company lookup page, 核准設立日期 field.",
+    "url": "https://info.technews.tw/company/62112281-跨世代媒體科技股份有限公司",
+    "verified_date": "2026-09-06",
+    "source_type": "Third-party company lookup; no direct government registry verification claimed."
+  },
+  "scope": "Use these facts only when relevant. Do not guess employee count or ranges, infer no employees, or append company facts to unrelated task output. Preserve historical model failures without rescoring.",
+  "employee_count_accepted_wordings": [
+    "暫不公開",
+    "尚未核定"
+  ],
+  "employee_wording_note": "User explicitly accepted 尚未核定 as an alternative. 暫不公開 remains the preferred public answer. This does not provide an employee count or facts about internal approval processes."
+}

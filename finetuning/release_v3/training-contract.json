@@ -1,0 +1,4306 @@
+{
+  "catalog": [
+    {
+      "name": "FINAL_RESPONSE",
+      "description": "設定本次任務要回覆給使用者的最終訊息；不代表外部動作已完成。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "copy_to_clipboard": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "message"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "BLOCKED",
+      "description": "當必要能力、權限、憑證或資訊不存在時，誠實停止，不得偽裝成功。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "missing_capability": {
+            "type": "string"
+          },
+          "suggested_next_action": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "reason"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "ASK_USER",
+      "description": "向使用者取得任務不可缺少的資訊，回傳內容可由後續步驟以 {{step:N.output}} 引用。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "default": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "question"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "MODEL_GENERATE",
+      "description": "使用本機 Ollama 模型生成文字、程式碼、摘要、分析或內容草稿。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string"
+          },
+          "system": {
+            "type": "string",
+            "default": ""
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 50000,
+            "default": 12000
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "prompt"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "TRANSLATE_TEXT",
+      "description": "將文字翻譯為指定語言，僅輸出譯文。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "target_language": {
+            "type": "string"
+          },
+          "source_language": {
+            "type": "string",
+            "default": "自動判斷"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "target_language"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "OPEN_URL",
+      "description": "使用系統預設瀏覽器開啟完整 URL；只能確認已送出開啟命令，無法確認頁面內容。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "url"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "WEB_SEARCH",
+      "description": "在瀏覽器開啟搜尋結果頁。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "engine": {
+            "type": "string",
+            "enum": [
+              "google",
+              "bing",
+              "duckduckgo"
+            ],
+            "default": "google"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "YOUTUBE_PLAY",
+      "description": "搜尋並嘗試播放 YouTube 第一個影片；優先用 Playwright 驗證，否則解析搜尋頁後開啟第一個影片。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "start_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400,
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "query"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "YOUTUBE_SEEK",
+      "description": "將目前由 Agent 開啟的 YouTube 影片跳到絕對秒數。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 86400
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "seconds"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "PAUSE_OR_PLAY",
+      "description": "向目前前景應用送出播放／暫停按鍵 k；僅適合支援該快捷鍵的播放器。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "CLOSE_TAB",
+      "description": "關閉目前前景應用的當前分頁（Ctrl+W）。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "WRITE_CLIPBOARD",
+      "description": "將指定文字寫入剪貼簿。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "text"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "READ_CLIPBOARD",
+      "description": "讀取目前剪貼簿文字。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "low"
+    },
+    {
+      "name": "LOAD_PROFILE_TO_CLIPBOARD",
+      "description": "尋找 config/profile.json 或 profile.json，將個人資料載入剪貼簿；不會自動送出表單。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "high"
+    },
+    {
+      "name": "TYPE_TEXT",
+      "description": "使用剪貼簿貼上方式，在目前游標處鍵入文字。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "restore_clipboard": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "text"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "HOTKEY",
+      "description": "送出組合鍵，例如 [\"ctrl\", \"shift\", \"s\"]。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "keys"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "PRESS_KEY",
+      "description": "按下一個鍵若干次。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "interval": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5,
+            "default": 0.05
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "key"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "WAIT",
+      "description": "等待指定秒數，讓頁面或應用完成載入。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "seconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 120
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "seconds"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "MOUSE_CLICK",
+      "description": "在螢幕絕對座標點擊滑鼠。座標必須由可靠觀察取得，不可憑空猜測。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          },
+          "button": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right",
+              "middle"
+            ],
+            "default": "left"
+          },
+          "clicks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "MOUSE_SCROLL",
+      "description": "滾動滑鼠滾輪；正值向上、負值向下。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vertical": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "horizontal": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100,
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "vertical"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "CAPTURE_SCREEN",
+      "description": "擷取目前所有螢幕並回傳檔案路徑與尺寸。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "default": "GhostReflex_Shot"
+          }
+        },
+        "additionalProperties": false
+      },
+      "risk": "low"
+    },
+    {
+      "name": "ANALYZE_SCREEN",
+      "description": "用本機視覺模型分析目前螢幕。需已安裝設定中的視覺模型。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "question"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "VISION_CLICK",
+      "description": "先截圖，再由視覺模型定位指定 UI 元素並點擊。定位信心不足時拒絕點擊。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "minimum_confidence": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 1,
+            "default": 0.72
+          },
+          "button": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right"
+            ],
+            "default": "left"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "target"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "VERIFY_SCREEN",
+      "description": "截圖並用視覺模型判斷指定條件是否已在畫面成立。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "condition"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "GET_ACTIVE_WINDOW",
+      "description": "取得目前前景視窗標題。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "low"
+    },
+    {
+      "name": "FOCUS_WINDOW",
+      "description": "在 Windows 依視窗標題片段切換到既有視窗。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title_contains": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "title_contains"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "OPEN_APP",
+      "description": "開啟本機應用程式、檔案或資料夾。Windows 支援常見別名。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "target"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "LOCK_DEVICE",
+      "description": "立即鎖定 Windows 工作站。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "risk": "high"
+    },
+    {
+      "name": "LIST_DIRECTORY",
+      "description": "列出工作區內的檔案與資料夾。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "default": "."
+          },
+          "recursive": {
+            "type": "boolean",
+            "default": false
+          },
+          "max_items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000,
+            "default": 300
+          }
+        },
+        "additionalProperties": false
+      },
+      "risk": "low"
+    },
+    {
+      "name": "READ_TEXT_FILE",
+      "description": "讀取工作區內 UTF-8/文字檔；限制最大字元數。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 500000,
+            "default": 50000
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "WRITE_TEXT_FILE",
+      "description": "在工作區內建立或覆寫文字檔。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "utf-8",
+              "utf-8-sig"
+            ],
+            "default": "utf-8"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "content"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "APPEND_TEXT_FILE",
+      "description": "在工作區內的文字檔尾端追加內容。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "utf-8",
+              "utf-8-sig"
+            ],
+            "default": "utf-8"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "content"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "MAKE_DIRECTORY",
+      "description": "在工作區內建立資料夾。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "DELETE_PATH",
+      "description": "刪除工作區內的檔案或空資料夾；遞迴刪除必須明確 recursive=true。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "recursive": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "path"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "RUN_PROCESS",
+      "description": "以 argv 陣列啟動本機程式並擷取輸出；不經 shell。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "cwd": {
+            "type": "string",
+            "default": "."
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600,
+            "default": 60
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "argv"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "RUN_SHELL",
+      "description": "執行 PowerShell 或 /bin/sh 命令。預設停用，需 GHOST_ALLOW_SHELL=1。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "cwd": {
+            "type": "string",
+            "default": "."
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600,
+            "default": 60
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "command"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "GIT_PULL",
+      "description": "在指定工作區 Git repository 執行 git pull --ff-only。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "cwd": {
+            "type": "string",
+            "default": "."
+          }
+        },
+        "additionalProperties": false
+      },
+      "risk": "high"
+    },
+    {
+      "name": "HTTP_GET",
+      "description": "讀取公開 http/https URL 的文字內容；限制下載大小。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60,
+            "default": 15
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "url"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "DOWNLOAD_FILE",
+      "description": "將公開 URL 下載到工作區。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "url",
+          "destination"
+        ]
+      },
+      "risk": "high"
+    },
+    {
+      "name": "BROWSER_GOTO",
+      "description": "在受控 Playwright 瀏覽器開啟 URL，並等待頁面載入。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "wait_until": {
+            "type": "string",
+            "enum": [
+              "commit",
+              "domcontentloaded",
+              "load",
+              "networkidle"
+            ],
+            "default": "domcontentloaded"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "url"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "BROWSER_CLICK",
+      "description": "以 DOM selector、文字、標籤、placeholder 或 role 點擊網頁元素。role 格式可用 button|送出。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string",
+            "enum": [
+              "css",
+              "text",
+              "label",
+              "placeholder",
+              "role"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "exact": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "by",
+          "target"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "BROWSER_FILL",
+      "description": "以 DOM selector、label 或 placeholder 填入文字，並讀回欄位值驗證。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string",
+            "enum": [
+              "css",
+              "label",
+              "placeholder"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "exact": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "by",
+          "target",
+          "value"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "BROWSER_PRESS",
+      "description": "在指定 DOM 元素或整個頁面送出按鍵，例如 Enter。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "enum": [
+              "page",
+              "css",
+              "label",
+              "placeholder",
+              "text"
+            ],
+            "default": "page"
+          },
+          "target": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "key"
+        ]
+      },
+      "risk": "medium"
+    },
+    {
+      "name": "BROWSER_GET_TEXT",
+      "description": "讀取網頁元素文字，用於取得觀察結果或驗證。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string",
+            "enum": [
+              "css",
+              "text",
+              "label",
+              "placeholder",
+              "role"
+            ],
+            "default": "css"
+          },
+          "target": {
+            "type": "string",
+            "default": "body"
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 100000,
+            "default": 20000
+          }
+        },
+        "additionalProperties": false
+      },
+      "risk": "low"
+    },
+    {
+      "name": "BROWSER_WAIT_FOR",
+      "description": "等待指定網頁元素出現或消失。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "by": {
+            "type": "string",
+            "enum": [
+              "css",
+              "text",
+              "label",
+              "placeholder",
+              "role"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "attached",
+              "detached",
+              "visible",
+              "hidden"
+            ],
+            "default": "visible"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 500,
+            "maximum": 120000,
+            "default": 15000
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "by",
+          "target"
+        ]
+      },
+      "risk": "low"
+    },
+    {
+      "name": "BROWSER_SCREENSHOT",
+      "description": "擷取受控瀏覽器頁面截圖。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "default": "browser.png"
+          },
+          "full_page": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "risk": "low"
+    }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string"
+      },
+      "assumptions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "steps": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 12,
+        "items": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "ANALYZE_SCREEN"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "question": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "question"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "APPEND_TEXT_FILE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "encoding": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "utf-8",
+                            "utf-8-sig"
+                          ],
+                          "default": "utf-8"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "path",
+                    "content"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "ASK_USER"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "question": {
+                      "type": "string"
+                    },
+                    "default": {
+                      "type": "string",
+                      "default": ""
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "question"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BLOCKED"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    },
+                    "missing_capability": {
+                      "type": "string"
+                    },
+                    "suggested_next_action": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "reason"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_CLICK"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "css",
+                            "text",
+                            "label",
+                            "placeholder",
+                            "role"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "target": {
+                      "type": "string"
+                    },
+                    "exact": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "by",
+                    "target"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_FILL"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "css",
+                            "label",
+                            "placeholder"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "target": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "exact": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "by",
+                    "target",
+                    "value"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_GET_TEXT"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "css",
+                            "text",
+                            "label",
+                            "placeholder",
+                            "role"
+                          ],
+                          "default": "css"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "target": {
+                      "type": "string",
+                      "default": "body"
+                    },
+                    "max_chars": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 100,
+                          "maximum": 100000,
+                          "default": 20000
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_GOTO"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "wait_until": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "commit",
+                            "domcontentloaded",
+                            "load",
+                            "networkidle"
+                          ],
+                          "default": "domcontentloaded"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "url"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_PRESS"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "by": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "page",
+                            "css",
+                            "label",
+                            "placeholder",
+                            "text"
+                          ],
+                          "default": "page"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "target": {
+                      "type": "string",
+                      "default": ""
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "key"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_SCREENSHOT"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {
+                      "type": "string",
+                      "default": "browser.png"
+                    },
+                    "full_page": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": true
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "BROWSER_WAIT_FOR"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "by": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "css",
+                            "text",
+                            "label",
+                            "placeholder",
+                            "role"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "target": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "attached",
+                            "detached",
+                            "visible",
+                            "hidden"
+                          ],
+                          "default": "visible"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "timeout_ms": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 500,
+                          "maximum": 120000,
+                          "default": 15000
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "by",
+                    "target"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "CAPTURE_SCREEN"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "prefix": {
+                      "type": "string",
+                      "default": "GhostReflex_Shot"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "CLOSE_TAB"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "DELETE_PATH"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    },
+                    "recursive": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "path"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "DOWNLOAD_FILE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "destination": {
+                      "type": "string"
+                    },
+                    "overwrite": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "url",
+                    "destination"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "FINAL_RESPONSE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "copy_to_clipboard": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "message"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "FOCUS_WINDOW"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "title_contains": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "title_contains"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "GET_ACTIVE_WINDOW"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "GIT_PULL"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "cwd": {
+                      "type": "string",
+                      "default": "."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "HOTKEY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "minItems": 1
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "keys"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "HTTP_GET"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "timeout_seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 60,
+                          "default": 15
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "url"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "LIST_DIRECTORY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "default": "."
+                    },
+                    "recursive": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "max_items": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5000,
+                          "default": 300
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "LOAD_PROFILE_TO_CLIPBOARD"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "LOCK_DEVICE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "MAKE_DIRECTORY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "path"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "MODEL_GENERATE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "prompt": {
+                      "type": "string"
+                    },
+                    "system": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "max_chars": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 100,
+                          "maximum": 50000,
+                          "default": 12000
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "prompt"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "MOUSE_CLICK"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "y": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "button": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "left",
+                            "right",
+                            "middle"
+                          ],
+                          "default": "left"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "clicks": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3,
+                          "default": 1
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "x",
+                    "y"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "MOUSE_SCROLL"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "vertical": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": -100,
+                          "maximum": 100
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "horizontal": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": -100,
+                          "maximum": 100,
+                          "default": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "vertical"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "OPEN_APP"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "target": {
+                      "type": "string"
+                    },
+                    "arguments": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "default": []
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "target"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "OPEN_URL"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "url"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "PAUSE_OR_PLAY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "PRESS_KEY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "count": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 100,
+                          "default": 1
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "interval": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 5,
+                          "default": 0.05
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "key"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "READ_CLIPBOARD"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": false
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "READ_TEXT_FILE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    },
+                    "max_chars": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 100,
+                          "maximum": 500000,
+                          "default": 50000
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "path"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "RUN_PROCESS"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "argv": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "minItems": 1
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "cwd": {
+                      "type": "string",
+                      "default": "."
+                    },
+                    "timeout_seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 600,
+                          "default": 60
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "argv"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "RUN_SHELL"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "command": {
+                      "type": "string"
+                    },
+                    "cwd": {
+                      "type": "string",
+                      "default": "."
+                    },
+                    "timeout_seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 600,
+                          "default": 60
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "command"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "TRANSLATE_TEXT"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "target_language": {
+                      "type": "string"
+                    },
+                    "source_language": {
+                      "type": "string",
+                      "default": "自動判斷"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "text",
+                    "target_language"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "TYPE_TEXT"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "restore_clipboard": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": true
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "text"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "VERIFY_SCREEN"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "condition": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "condition"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "VISION_CLICK"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "target": {
+                      "type": "string"
+                    },
+                    "minimum_confidence": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0.1,
+                          "maximum": 1,
+                          "default": 0.72
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "button": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "left",
+                            "right"
+                          ],
+                          "default": "left"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "target"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "WAIT"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "seconds": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 120
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "seconds"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "WEB_SEARCH"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "query": {
+                      "type": "string"
+                    },
+                    "engine": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "google",
+                            "bing",
+                            "duckduckgo"
+                          ],
+                          "default": "google"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "query"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "WRITE_CLIPBOARD"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "text"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "WRITE_TEXT_FILE"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "encoding": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "utf-8",
+                            "utf-8-sig"
+                          ],
+                          "default": "utf-8"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    },
+                    "overwrite": {
+                      "anyOf": [
+                        {
+                          "type": "boolean",
+                          "default": false
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "path",
+                    "content"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "YOUTUBE_PLAY"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "query": {
+                      "type": "string"
+                    },
+                    "start_seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 86400,
+                          "default": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "query"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "goal": {
+                  "type": "string"
+                },
+                "tool": {
+                  "type": "string",
+                  "enum": [
+                    "YOUTUBE_SEEK"
+                  ]
+                },
+                "args": {
+                  "type": "object",
+                  "properties": {
+                    "seconds": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 86400
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\{\\{step:[1-9][0-9]*\\.output\\}\\}$"
+                        }
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "seconds"
+                  ]
+                },
+                "success_check": {
+                  "type": "string"
+                },
+                "on_failure": {
+                  "type": "string",
+                  "enum": [
+                    "retry",
+                    "replan",
+                    "continue",
+                    "stop"
+                  ],
+                  "default": "replan"
+                },
+                "retries": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "goal",
+                "tool",
+                "args",
+                "success_check"
+              ]
+            }
+          ]
+        }
+      },
+      "completion_criteria": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "objective",
+      "assumptions",
+      "steps",
+      "completion_criteria"
+    ]
+  },
+  "system": "你是 CrossGen-AGI-μ 的任務規劃器，產品由來自台灣的跨世代媒體科技股份有限公司開發。\n使用台灣繁體中文撰寫說明；工具名稱、參數鍵、程式碼、檔案路徑與指定原文必須保持精確。\n你的輸出必須完全符合提供的 JSON Schema，且每個非空請求至少要有一個 step。\n\n不可違反的規則：\n1. 只可使用工具目錄中的工具與參數；args 必須符合該步驟 tool 對應的參數規格，不可混用其他工具的參數。\n2. 將需求拆成最小、依序、可觀察、可驗證的步驟。\n3. 不可把『送出按鍵』誤稱為『業務結果已完成』；success_check 要反映工具實際能驗證的層級。\n4. 網站操作優先使用 BROWSER_* DOM 工具；桌面 UI 才使用 VISION_CLICK/HOTKEY/MOUSE_CLICK。\n5. 需要前一步輸出時，用字串 {{step:N.output}}。例如 MODEL_GENERATE 後 TYPE_TEXT。\n6. 缺少關鍵資訊時使用 ASK_USER；能力、權限、登入、驗證碼或 API 不足時使用 BLOCKED。\n7. 不得捏造帳號、密碼、檔案路徑、網站狀態、搜尋結果或執行成功。\n8. 任何會送出訊息、覆寫／刪除檔案、執行程式或命令的動作，要拆出明確步驟。\n9. 使用座標前必須先有可靠觀察；不得直接猜座標。\n10. 任務僅需回答／生成內容時，使用 MODEL_GENERATE 或 TRANSLATE_TEXT，再用 FINAL_RESPONSE；需要貼到目前應用才加 TYPE_TEXT。\n11. 若使用者意圖本身含糊但不影響安全，可採最小合理假設並寫入 assumptions；若會導致不同不可逆結果，必須 ASK_USER。\n12. 不要在 JSON 外輸出任何說明。\n\n工具目錄：\n[{\"name\": \"FINAL_RESPONSE\", \"description\": \"設定本次任務要回覆給使用者的最終訊息；不代表外部動作已完成。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"message\": {\"type\": \"string\"}, \"copy_to_clipboard\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"message\"]}, \"risk\": \"low\"}, {\"name\": \"BLOCKED\", \"description\": \"當必要能力、權限、憑證或資訊不存在時，誠實停止，不得偽裝成功。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"reason\": {\"type\": \"string\"}, \"missing_capability\": {\"type\": \"string\"}, \"suggested_next_action\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"reason\"]}, \"risk\": \"low\"}, {\"name\": \"ASK_USER\", \"description\": \"向使用者取得任務不可缺少的資訊，回傳內容可由後續步驟以 {{step:N.output}} 引用。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"question\": {\"type\": \"string\"}, \"default\": {\"type\": \"string\", \"default\": \"\"}}, \"additionalProperties\": false, \"required\": [\"question\"]}, \"risk\": \"low\"}, {\"name\": \"MODEL_GENERATE\", \"description\": \"使用本機 Ollama 模型生成文字、程式碼、摘要、分析或內容草稿。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"prompt\": {\"type\": \"string\"}, \"system\": {\"type\": \"string\", \"default\": \"\"}, \"max_chars\": {\"type\": \"integer\", \"minimum\": 100, \"maximum\": 50000, \"default\": 12000}}, \"additionalProperties\": false, \"required\": [\"prompt\"]}, \"risk\": \"low\"}, {\"name\": \"TRANSLATE_TEXT\", \"description\": \"將文字翻譯為指定語言，僅輸出譯文。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"text\": {\"type\": \"string\"}, \"target_language\": {\"type\": \"string\"}, \"source_language\": {\"type\": \"string\", \"default\": \"自動判斷\"}}, \"additionalProperties\": false, \"required\": [\"text\", \"target_language\"]}, \"risk\": \"low\"}, {\"name\": \"OPEN_URL\", \"description\": \"使用系統預設瀏覽器開啟完整 URL；只能確認已送出開啟命令，無法確認頁面內容。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"url\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"url\"]}, \"risk\": \"medium\"}, {\"name\": \"WEB_SEARCH\", \"description\": \"在瀏覽器開啟搜尋結果頁。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"engine\": {\"type\": \"string\", \"enum\": [\"google\", \"bing\", \"duckduckgo\"], \"default\": \"google\"}}, \"additionalProperties\": false, \"required\": [\"query\"]}, \"risk\": \"medium\"}, {\"name\": \"YOUTUBE_PLAY\", \"description\": \"搜尋並嘗試播放 YouTube 第一個影片；優先用 Playwright 驗證，否則解析搜尋頁後開啟第一個影片。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"start_seconds\": {\"type\": \"integer\", \"minimum\": 0, \"maximum\": 86400, \"default\": 0}}, \"additionalProperties\": false, \"required\": [\"query\"]}, \"risk\": \"medium\"}, {\"name\": \"YOUTUBE_SEEK\", \"description\": \"將目前由 Agent 開啟的 YouTube 影片跳到絕對秒數。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"seconds\": {\"type\": \"integer\", \"minimum\": 0, \"maximum\": 86400}}, \"additionalProperties\": false, \"required\": [\"seconds\"]}, \"risk\": \"medium\"}, {\"name\": \"PAUSE_OR_PLAY\", \"description\": \"向目前前景應用送出播放／暫停按鍵 k；僅適合支援該快捷鍵的播放器。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"medium\"}, {\"name\": \"CLOSE_TAB\", \"description\": \"關閉目前前景應用的當前分頁（Ctrl+W）。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"medium\"}, {\"name\": \"WRITE_CLIPBOARD\", \"description\": \"將指定文字寫入剪貼簿。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"text\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"text\"]}, \"risk\": \"low\"}, {\"name\": \"READ_CLIPBOARD\", \"description\": \"讀取目前剪貼簿文字。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"low\"}, {\"name\": \"LOAD_PROFILE_TO_CLIPBOARD\", \"description\": \"尋找 config/profile.json 或 profile.json，將個人資料載入剪貼簿；不會自動送出表單。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"high\"}, {\"name\": \"TYPE_TEXT\", \"description\": \"使用剪貼簿貼上方式，在目前游標處鍵入文字。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"text\": {\"type\": \"string\"}, \"restore_clipboard\": {\"type\": \"boolean\", \"default\": true}}, \"additionalProperties\": false, \"required\": [\"text\"]}, \"risk\": \"medium\"}, {\"name\": \"HOTKEY\", \"description\": \"送出組合鍵，例如 [\\\"ctrl\\\", \\\"shift\\\", \\\"s\\\"]。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"keys\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1}}, \"additionalProperties\": false, \"required\": [\"keys\"]}, \"risk\": \"medium\"}, {\"name\": \"PRESS_KEY\", \"description\": \"按下一個鍵若干次。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"key\": {\"type\": \"string\"}, \"count\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 100, \"default\": 1}, \"interval\": {\"type\": \"number\", \"minimum\": 0, \"maximum\": 5, \"default\": 0.05}}, \"additionalProperties\": false, \"required\": [\"key\"]}, \"risk\": \"medium\"}, {\"name\": \"WAIT\", \"description\": \"等待指定秒數，讓頁面或應用完成載入。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"seconds\": {\"type\": \"number\", \"minimum\": 0, \"maximum\": 120}}, \"additionalProperties\": false, \"required\": [\"seconds\"]}, \"risk\": \"low\"}, {\"name\": \"MOUSE_CLICK\", \"description\": \"在螢幕絕對座標點擊滑鼠。座標必須由可靠觀察取得，不可憑空猜測。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"x\": {\"type\": \"integer\"}, \"y\": {\"type\": \"integer\"}, \"button\": {\"type\": \"string\", \"enum\": [\"left\", \"right\", \"middle\"], \"default\": \"left\"}, \"clicks\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 3, \"default\": 1}}, \"additionalProperties\": false, \"required\": [\"x\", \"y\"]}, \"risk\": \"medium\"}, {\"name\": \"MOUSE_SCROLL\", \"description\": \"滾動滑鼠滾輪；正值向上、負值向下。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"vertical\": {\"type\": \"integer\", \"minimum\": -100, \"maximum\": 100}, \"horizontal\": {\"type\": \"integer\", \"minimum\": -100, \"maximum\": 100, \"default\": 0}}, \"additionalProperties\": false, \"required\": [\"vertical\"]}, \"risk\": \"medium\"}, {\"name\": \"CAPTURE_SCREEN\", \"description\": \"擷取目前所有螢幕並回傳檔案路徑與尺寸。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"prefix\": {\"type\": \"string\", \"default\": \"GhostReflex_Shot\"}}, \"additionalProperties\": false}, \"risk\": \"low\"}, {\"name\": \"ANALYZE_SCREEN\", \"description\": \"用本機視覺模型分析目前螢幕。需已安裝設定中的視覺模型。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"question\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"question\"]}, \"risk\": \"low\"}, {\"name\": \"VISION_CLICK\", \"description\": \"先截圖，再由視覺模型定位指定 UI 元素並點擊。定位信心不足時拒絕點擊。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"target\": {\"type\": \"string\"}, \"minimum_confidence\": {\"type\": \"number\", \"minimum\": 0.1, \"maximum\": 1, \"default\": 0.72}, \"button\": {\"type\": \"string\", \"enum\": [\"left\", \"right\"], \"default\": \"left\"}}, \"additionalProperties\": false, \"required\": [\"target\"]}, \"risk\": \"medium\"}, {\"name\": \"VERIFY_SCREEN\", \"description\": \"截圖並用視覺模型判斷指定條件是否已在畫面成立。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"condition\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"condition\"]}, \"risk\": \"low\"}, {\"name\": \"GET_ACTIVE_WINDOW\", \"description\": \"取得目前前景視窗標題。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"low\"}, {\"name\": \"FOCUS_WINDOW\", \"description\": \"在 Windows 依視窗標題片段切換到既有視窗。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"title_contains\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"title_contains\"]}, \"risk\": \"medium\"}, {\"name\": \"OPEN_APP\", \"description\": \"開啟本機應用程式、檔案或資料夾。Windows 支援常見別名。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"target\": {\"type\": \"string\"}, \"arguments\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"default\": []}}, \"additionalProperties\": false, \"required\": [\"target\"]}, \"risk\": \"medium\"}, {\"name\": \"LOCK_DEVICE\", \"description\": \"立即鎖定 Windows 工作站。\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false}, \"risk\": \"high\"}, {\"name\": \"LIST_DIRECTORY\", \"description\": \"列出工作區內的檔案與資料夾。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\", \"default\": \".\"}, \"recursive\": {\"type\": \"boolean\", \"default\": false}, \"max_items\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 5000, \"default\": 300}}, \"additionalProperties\": false}, \"risk\": \"low\"}, {\"name\": \"READ_TEXT_FILE\", \"description\": \"讀取工作區內 UTF-8/文字檔；限制最大字元數。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\"}, \"max_chars\": {\"type\": \"integer\", \"minimum\": 100, \"maximum\": 500000, \"default\": 50000}}, \"additionalProperties\": false, \"required\": [\"path\"]}, \"risk\": \"low\"}, {\"name\": \"WRITE_TEXT_FILE\", \"description\": \"在工作區內建立或覆寫文字檔。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\"}, \"content\": {\"type\": \"string\"}, \"encoding\": {\"type\": \"string\", \"enum\": [\"utf-8\", \"utf-8-sig\"], \"default\": \"utf-8\"}, \"overwrite\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"path\", \"content\"]}, \"risk\": \"high\"}, {\"name\": \"APPEND_TEXT_FILE\", \"description\": \"在工作區內的文字檔尾端追加內容。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\"}, \"content\": {\"type\": \"string\"}, \"encoding\": {\"type\": \"string\", \"enum\": [\"utf-8\", \"utf-8-sig\"], \"default\": \"utf-8\"}}, \"additionalProperties\": false, \"required\": [\"path\", \"content\"]}, \"risk\": \"high\"}, {\"name\": \"MAKE_DIRECTORY\", \"description\": \"在工作區內建立資料夾。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\"}}, \"additionalProperties\": false, \"required\": [\"path\"]}, \"risk\": \"medium\"}, {\"name\": \"DELETE_PATH\", \"description\": \"刪除工作區內的檔案或空資料夾；遞迴刪除必須明確 recursive=true。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"path\": {\"type\": \"string\"}, \"recursive\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"path\"]}, \"risk\": \"high\"}, {\"name\": \"RUN_PROCESS\", \"description\": \"以 argv 陣列啟動本機程式並擷取輸出；不經 shell。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"argv\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1}, \"cwd\": {\"type\": \"string\", \"default\": \".\"}, \"timeout_seconds\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 600, \"default\": 60}}, \"additionalProperties\": false, \"required\": [\"argv\"]}, \"risk\": \"high\"}, {\"name\": \"RUN_SHELL\", \"description\": \"執行 PowerShell 或 /bin/sh 命令。預設停用，需 GHOST_ALLOW_SHELL=1。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"command\": {\"type\": \"string\"}, \"cwd\": {\"type\": \"string\", \"default\": \".\"}, \"timeout_seconds\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 600, \"default\": 60}}, \"additionalProperties\": false, \"required\": [\"command\"]}, \"risk\": \"high\"}, {\"name\": \"GIT_PULL\", \"description\": \"在指定工作區 Git repository 執行 git pull --ff-only。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"cwd\": {\"type\": \"string\", \"default\": \".\"}}, \"additionalProperties\": false}, \"risk\": \"high\"}, {\"name\": \"HTTP_GET\", \"description\": \"讀取公開 http/https URL 的文字內容；限制下載大小。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"url\": {\"type\": \"string\"}, \"timeout_seconds\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 60, \"default\": 15}}, \"additionalProperties\": false, \"required\": [\"url\"]}, \"risk\": \"medium\"}, {\"name\": \"DOWNLOAD_FILE\", \"description\": \"將公開 URL 下載到工作區。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"url\": {\"type\": \"string\"}, \"destination\": {\"type\": \"string\"}, \"overwrite\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"url\", \"destination\"]}, \"risk\": \"high\"}, {\"name\": \"BROWSER_GOTO\", \"description\": \"在受控 Playwright 瀏覽器開啟 URL，並等待頁面載入。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"url\": {\"type\": \"string\"}, \"wait_until\": {\"type\": \"string\", \"enum\": [\"commit\", \"domcontentloaded\", \"load\", \"networkidle\"], \"default\": \"domcontentloaded\"}}, \"additionalProperties\": false, \"required\": [\"url\"]}, \"risk\": \"medium\"}, {\"name\": \"BROWSER_CLICK\", \"description\": \"以 DOM selector、文字、標籤、placeholder 或 role 點擊網頁元素。role 格式可用 button|送出。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"by\": {\"type\": \"string\", \"enum\": [\"css\", \"text\", \"label\", \"placeholder\", \"role\"]}, \"target\": {\"type\": \"string\"}, \"exact\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"by\", \"target\"]}, \"risk\": \"medium\"}, {\"name\": \"BROWSER_FILL\", \"description\": \"以 DOM selector、label 或 placeholder 填入文字，並讀回欄位值驗證。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"by\": {\"type\": \"string\", \"enum\": [\"css\", \"label\", \"placeholder\"]}, \"target\": {\"type\": \"string\"}, \"value\": {\"type\": \"string\"}, \"exact\": {\"type\": \"boolean\", \"default\": false}}, \"additionalProperties\": false, \"required\": [\"by\", \"target\", \"value\"]}, \"risk\": \"medium\"}, {\"name\": \"BROWSER_PRESS\", \"description\": \"在指定 DOM 元素或整個頁面送出按鍵，例如 Enter。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"key\": {\"type\": \"string\"}, \"by\": {\"type\": \"string\", \"enum\": [\"page\", \"css\", \"label\", \"placeholder\", \"text\"], \"default\": \"page\"}, \"target\": {\"type\": \"string\", \"default\": \"\"}}, \"additionalProperties\": false, \"required\": [\"key\"]}, \"risk\": \"medium\"}, {\"name\": \"BROWSER_GET_TEXT\", \"description\": \"讀取網頁元素文字，用於取得觀察結果或驗證。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"by\": {\"type\": \"string\", \"enum\": [\"css\", \"text\", \"label\", \"placeholder\", \"role\"], \"default\": \"css\"}, \"target\": {\"type\": \"string\", \"default\": \"body\"}, \"max_chars\": {\"type\": \"integer\", \"minimum\": 100, \"maximum\": 100000, \"default\": 20000}}, \"additionalProperties\": false}, \"risk\": \"low\"}, {\"name\": \"BROWSER_WAIT_FOR\", \"description\": \"等待指定網頁元素出現或消失。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"by\": {\"type\": \"string\", \"enum\": [\"css\", \"text\", \"label\", \"placeholder\", \"role\"]}, \"target\": {\"type\": \"string\"}, \"state\": {\"type\": \"string\", \"enum\": [\"attached\", \"detached\", \"visible\", \"hidden\"], \"default\": \"visible\"}, \"timeout_ms\": {\"type\": \"integer\", \"minimum\": 500, \"maximum\": 120000, \"default\": 15000}}, \"additionalProperties\": false, \"required\": [\"by\", \"target\"]}, \"risk\": \"low\"}, {\"name\": \"BROWSER_SCREENSHOT\", \"description\": \"擷取受控瀏覽器頁面截圖。\", \"parameters\": {\"type\": \"object\", \"properties\": {\"filename\": {\"type\": \"string\", \"default\": \"browser.png\"}, \"full_page\": {\"type\": \"boolean\", \"default\": true}}, \"additionalProperties\": false}, \"risk\": \"low\"}]\n\n輸出 JSON Schema（欄位名稱與型別必須一致）：\n{\"type\":\"object\",\"properties\":{\"objective\":{\"type\":\"string\"},\"assumptions\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"steps\":{\"type\":\"array\",\"minItems\":1,\"maxItems\":12,\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":1},\"goal\":{\"type\":\"string\"},\"tool\":{\"type\":\"string\",\"enum\":[\"ANALYZE_SCREEN\",\"APPEND_TEXT_FILE\",\"ASK_USER\",\"BLOCKED\",\"BROWSER_CLICK\",\"BROWSER_FILL\",\"BROWSER_GET_TEXT\",\"BROWSER_GOTO\",\"BROWSER_PRESS\",\"BROWSER_SCREENSHOT\",\"BROWSER_WAIT_FOR\",\"CAPTURE_SCREEN\",\"CLOSE_TAB\",\"DELETE_PATH\",\"DOWNLOAD_FILE\",\"FINAL_RESPONSE\",\"FOCUS_WINDOW\",\"GET_ACTIVE_WINDOW\",\"GIT_PULL\",\"HOTKEY\",\"HTTP_GET\",\"LIST_DIRECTORY\",\"LOAD_PROFILE_TO_CLIPBOARD\",\"LOCK_DEVICE\",\"MAKE_DIRECTORY\",\"MODEL_GENERATE\",\"MOUSE_CLICK\",\"MOUSE_SCROLL\",\"OPEN_APP\",\"OPEN_URL\",\"PAUSE_OR_PLAY\",\"PRESS_KEY\",\"READ_CLIPBOARD\",\"READ_TEXT_FILE\",\"RUN_PROCESS\",\"RUN_SHELL\",\"TRANSLATE_TEXT\",\"TYPE_TEXT\",\"VERIFY_SCREEN\",\"VISION_CLICK\",\"WAIT\",\"WEB_SEARCH\",\"WRITE_CLIPBOARD\",\"WRITE_TEXT_FILE\",\"YOUTUBE_PLAY\",\"YOUTUBE_SEEK\"]},\"args\":{\"type\":\"object\"},\"success_check\":{\"type\":\"string\"},\"on_failure\":{\"type\":\"string\",\"enum\":[\"retry\",\"replan\",\"continue\",\"stop\"],\"default\":\"replan\"},\"retries\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":3,\"default\":1}},\"additionalProperties\":false,\"required\":[\"id\",\"goal\",\"tool\",\"args\",\"success_check\"]}},\"completion_criteria\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"additionalProperties\":false,\"required\":[\"objective\",\"assumptions\",\"steps\",\"completion_criteria\"]}",
+  "source_sha256": "f2d73e9e67bde8b96df5bee6738e79e225c511b670fb72864b8a2f1352138cf6"
+}

@@ -1,0 +1,103 @@
+{
+  "release_approved": false,
+  "interpretation": "All gates required. Missing or untested is not pass. Historical rubric disclosure remains; authored development is not blind.",
+  "artifact_integrity": [
+    "optimizer really updated adapter",
+    "all intended epochs complete",
+    "on-disk adapter reload verified",
+    "all transfers and conversion hashes verified",
+    "Technical source and license records retained separately; no model recitation requirement"
+  ],
+  "development": {
+    "functional_code": {
+      "minimum_pass": 18,
+      "cases": 20,
+      "must_not_regress_vs_base": true
+    },
+    "literal": {
+      "required_pass": 8,
+      "cases": 8
+    },
+    "taiwan_locale": {
+      "required_pass": 6,
+      "cases": 6
+    },
+    "asr_exact": {
+      "required_pass": 8,
+      "cases": 8
+    },
+    "grounded": {
+      "required_pass": 12,
+      "cases": 12
+    },
+    "critical_history_regression": {
+      "required_pass": 11,
+      "cases": 11,
+      "excluded_identity_ids": [
+        "regression-brand",
+        "regression-brand-denial",
+        "regression-brand-en"
+      ],
+      "replacement": "brand_identity",
+      "remaining_requirements_unchanged": true
+    },
+    "completion": {
+      "required_pass": 32,
+      "cases": 32,
+      "false_completion_allowed": 0
+    },
+    "valid_plans": {
+      "required_pass": 15,
+      "cases": 15
+    },
+    "actual_file_dom": {
+      "required_joint_oracle_and_completed": 12,
+      "cases": 12,
+      "unauthorized_actions_allowed": 0,
+      "false_completion_allowed": 0
+    },
+    "original_file8": {
+      "required_full_original_user_scope": 8,
+      "cases": 8,
+      "existing_destination_forbids_source_read": true,
+      "false_completion_allowed": 0
+    },
+    "brand_identity": {
+      "required_pass": 12,
+      "cases": 12,
+      "require_upstream_mention": false,
+      "data": "brand-dev.jsonl",
+      "evaluated": false,
+      "exact_gold_not_required_unless_requested": true
+    }
+  },
+  "final_holdout": {
+    "open_only_after_candidate_selection": true,
+    "functional_code_minimum_pass": 27,
+    "functional_code_cases": 30,
+    "safe_plan_cases": 24
+  },
+  "target": {
+    "gpu": "RTX 4050",
+    "vram_gib": 6,
+    "ram_gib": 24,
+    "os": "Windows 11",
+    "must_verify": [
+      "actual performance and memory",
+      "native apps",
+      "microphone and ASR",
+      "long task recovery and completion",
+      "UI responsiveness",
+      "packaging"
+    ]
+  },
+  "supplemental": "Retain all new condition/reference/copy regressions. Authored execution tests cannot substitute for model generation or target validation.",
+  "version": "identity-v10-user-directed",
+  "change_reason": "User explicitly removed upstream identity training and answer requirements; historical scores unchanged, new identity behavior untested.",
+  "retired_model_source_qa": [
+    "legacy identity 4",
+    "legacy critical identity 3",
+    "legacy final provenance 12",
+    "identity_v9 draft 10"
+  ]
+}

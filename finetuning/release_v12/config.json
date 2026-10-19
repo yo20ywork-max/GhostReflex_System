@@ -1,0 +1,28 @@
+{
+  "base": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "revision": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+  "seed": 20260906,
+  "epochs": 3,
+  "learning_rate": 2e-05,
+  "rank": 32,
+  "alpha": 64,
+  "target_modules": "all-linear",
+  "gradient_accumulation": 8,
+  "warmup_ratio": 0.05,
+  "max_length": 12288,
+  "retention_kl_weight": 0.0,
+  "retention_positions": 16,
+  "max_train_seconds": 10800,
+  "max_retention_dev_nll_increase": 0.25,
+  "release_status": "prepared_not_trained",
+  "answer_logits_only": true,
+  "bf16_autocast": true,
+  "longest_sample_preflight": true,
+  "draft_notes": {
+    "initialization": "Fresh rank-32 adapter on the same pinned original base; no previous failed adapter or automatic merging.",
+    "data": "Current desktop contract; user-corrected brand/company facts; historical binding; evidence-availability pairs; contextual Taiwan language/literal contrasts; previous code/literal rows preserved. Source identity/license metadata is separate from model tokens.",
+    "limitations": "Storage and multi-GPU work approved. CPU lifecycle and real PEFT callback verification passed; full-size NF4/NCCL GPU preflight and generation release gates still pending."
+  },
+  "release_thresholds_file": "RELEASE_GATES.json",
+  "release_selection": "Generation, artifact and semantic gates required; development NLL is diagnostic only."
+}

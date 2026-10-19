@@ -1,0 +1,9 @@
+{
+  "training_allowed": false,
+  "reason": "Linguistic review tightened unfinished proofreading vs not-yet-proofread distinction and made the negative report-generation sentence fully grammatical.",
+  "replacement": "../content-contrasts-v3",
+  "historical_sources_preserved": [
+    "generator_source.py",
+    "audit_source.py"
+  ]
+}
