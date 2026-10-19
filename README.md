@@ -4,6 +4,22 @@
 包含 GhostReflex Windows 桌面代理、MicroGLR、詞表與現有小型權重、合成訓練資料、
 工具執行與驗證模組、Qt 介面、測試，以及本機保留的歷史研發程式。
 
+## Windows 一鍵啟動
+
+Windows EXE 與中文語音元件見 [GitHub Releases](https://github.com/yo20ywork-max/GhostReflex_System/releases)。
+請下載該版本的 **GhostReflex-Setup.exe**；首次開啟會自動安裝程式、Ollama、
+既有對話模型、Paraformer 中文辨識與瀏覽器元件。首次需連網下載約 8 GB，
+請保留至少 25 GB 可用空間；不需要另外安裝 Python 或登入帳號。
+
+安裝後點桌面 **GhostReflex**，等待控制面板顯示「中文語音已待命」。
+校準時安靜 5 秒，說話後看到右上角辨識文字，在 10 秒內按 **右 Ctrl** 執行；
+也能點 HUD 的「切換打字」。控制面板的「關閉系統」會結束本次啟動的
+GhostReflex、麥克風及獨立 Ollama 服務。
+
+預設安裝到 `%LOCALAPPDATA%\GhostReflex_System`，工作檔與記錄保存在該目錄。
+目前是預覽發行，已做的檢查與硬體限制以各 Release 的驗證報告為準。
+建置原始碼及檢查方式見 [packaging/windows](packaging/windows/README.md)。
+
 ## 專案內容
 
 | 路徑 | 用途 |
@@ -17,7 +33,7 @@
 | `desktop_ui/` | 本機另有保留的 Qt 桌面介面與語音工作程序 |
 | `tests/` | 原始單元測試與測試工具 |
 | `finetuning/` | 歷史微調、執行器與候選研究程式；各子目錄不等於已通過發布的產品 |
-| `build_exe.spec` | 本機 GhostReflex PyInstaller 打包設定 |
+| `build_exe.spec` | 歷史打包設定；本次 Windows 發行使用 `packaging/windows/` |
 | `SOURCE_INVENTORY.csv` | 本次從本機複製的各檔案大小及 SHA256 |
 
 這份本機工作目錄也保存後續 CrossGen 品牌實驗相關程式與歷史需求文件。
@@ -41,7 +57,7 @@ python run_daemon.py --no-voice
 ```
 
 先用 `ollama list` 確認模型已存在；如尚未準備，模型下載需另計網路與磁碟空間。
-上列是原始碼啟動步驟，本次上傳未進行全新環境安裝或模型對話驗收。
+上列是原始碼啟動步驟；Windows 安裝版的驗證範圍另見對應 Release 報告。
 
 若需 MicroGLR，另安裝 `requirements-microglr.txt`；舊版語音入口的額外相依列於
 `requirements-legacy-asr.txt`，且需自行準備對應語音模型。
@@ -54,7 +70,7 @@ Qt 介面與新的語音元件使用既有 `requirements-ui.txt`、`requirements
 python run_daemon.py --self-test
 ```
 
-本次沒有執行訓練、啟動自進化程序、開啟麥克風或執行桌面任務。
+初次原始碼公開時未執行訓練或啟動自進化程序。後續 Windows 打包只做必要的安裝與執行驗證。
 `train.py` 是從頭訓練入口；不要把它當作載入既有權重的啟動方式。
 詞表與 checkpoint 的使用限制見 `VOCABULARY.md`。
 

@@ -2718,6 +2718,12 @@ def strip_time_expression(text: str) -> str:
 
 
 def deterministic_plan(prompt: str, settings: Settings) -> Optional[TaskPlan]:
+    from conversation_intents import greeting_reply
+    greeting = greeting_reply(prompt)
+    if greeting is not None:
+        return TaskPlan(objective=prompt, assumptions=[], model='deterministic:greeting',
+                        steps=[PlanStep(1, '回覆問候', 'FINAL_RESPONSE', {'message': greeting},
+                                        '實際回覆已設定', 'stop', 0)], completion_criteria=['回覆問候。'])
     text = normalize_prompt(prompt)
     lower = text.lower()
 
@@ -3083,6 +3089,12 @@ class Planner:
             return False, "所有步驟均略過，沒有實際交付結果。"
         if not latest.get("ok"):
             return False, "最後步驟尚未成功，不能宣稱任務完成。"
+        from conversation_intents import greeting_reply
+        greeting = greeting_reply(prompt)
+        if (greeting is not None and len(history) == 1 and latest.get('tool') == 'FINAL_RESPONSE'
+                and latest.get('verified') is True and latest.get('output') == greeting
+                and latest.get('args', {}).get('message') == greeting):
+            return True, '純問候的實際回覆已核對；不需要等待或桌面操作。'
         from text_reader import uncovered_file_reads
         gaps = uncovered_file_reads(history)
         if gaps:
@@ -4123,6 +4135,7 @@ class VoiceEngine:
                 model=self.settings.asr_model,
                 hub=self.settings.asr_hub,
                 device=asr_device,
+                disable_update=True,
             )
         except Exception as exc:
             console_print(f"[ASR] 模型載入失敗：{exc}")
@@ -4166,13 +4179,8 @@ class VoiceEngine:
         )
         console_print("🎙️ 語音待命；辨識後按右 Ctrl 才會執行。\n")
 
-        from collections import deque
-
-        pre_buffer: Any = deque(maxlen=4)
-        buffer: list[Any] = []
-        silence_count = 0
-        speech_streak = 0
-        has_voice = False
+        from speech_segments import SpeechSegmenter
+        segmenter = SpeechSegmenter()
         filler_words = {"嗯", "啊", "喔", "好的", "測試", "喂", "在嗎"}
 
         try:
@@ -4182,31 +4190,10 @@ class VoiceEngine:
                 zcr = float(np.mean(np.abs(np.diff(np.sign(chunk.flatten())))) / 2)
                 is_speech = rms > voice_threshold and zcr < 0.40
 
-                if is_speech:
-                    speech_streak += 1
-                    if speech_streak >= 3 and not has_voice:
-                        has_voice = True
-                        buffer.extend(list(pre_buffer))
-                    if has_voice:
-                        buffer.append(chunk)
-                    silence_count = 0
-                else:
-                    speech_streak = 0
-                    if has_voice:
-                        buffer.append(chunk)
-                        silence_count += 1
-                    else:
-                        pre_buffer.append(chunk)
-
-                if not (has_voice and silence_count > 7):
+                segment = segmenter.feed(chunk, is_speech)
+                if segment is None:
                     continue
-
-                full_audio = np.concatenate(buffer, axis=0).flatten()
-                buffer = []
-                has_voice = False
-                silence_count = 0
-                speech_streak = 0
-                pre_buffer.clear()
+                full_audio = np.concatenate(segment, axis=0).flatten()
 
                 if len(full_audio) < 12800:
                     continue
@@ -4277,7 +4264,8 @@ def self_test(settings: Settings) -> int:
         "completion_criteria": ["完成"],
     }
     validated = validate_plan(raw, settings, "self-test")
-    assert validated.steps[0].id == 1
+    # Stable IDs preserve references and execution receipts across replans.
+    assert validated.steps[0].id == 7
 
     fake_results = {1: ToolResult(True, output="ABC", verified=True)}
     assert resolve_references("x={{step:1.output}}", fake_results) == "x=ABC"

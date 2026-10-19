@@ -1,0 +1,11 @@
+{
+  "pyinstaller": "6.22.2",
+  "torch": "2.4.1",
+  "torchaudio": "2.4.1+cpu",
+  "funasr": "1.4.13",
+  "numpy": "1.26.4",
+  "sounddevice": "0.5.6",
+  "ollama": "0.6.2",
+  "playwright": "1.52.0",
+  "opencc-python-reimplemented": "0.1.7"
+}
