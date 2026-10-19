@@ -20,7 +20,16 @@ GhostReflex、麥克風及獨立 Ollama 服務。
 目前是預覽發行，已做的檢查與硬體限制以各 Release 的驗證報告為準。
 建置原始碼及檢查方式見 [packaging/windows](packaging/windows/README.md)。
 
-## 專案內容
+## 團隊成員
+
+| 姓名 | 聯絡 Email |
+|---|---|
+| 唐丞佑 | [yo20ywork@gmail.com](mailto:yo20ywork@gmail.com) |
+| 劉邦昱 | [xvxxeo@gmail.com](mailto:xvxxeo@gmail.com) |
+| 劉芮妘 | [llrayunn@gmail.com](mailto:llrayunn@gmail.com) |
+| 李心愉 | [omary389520@gmail.com](mailto:omary389520@gmail.com) |
+
+## 原始碼目錄
 
 | 路徑 | 用途 |
 |---|---|
@@ -89,7 +98,7 @@ python run_daemon.py --self-test
 
 ## 狀態與授權
 
-這是原始碼公開快照，目前不提供經本輪驗證的 GhostReflex 安裝包。
-依使用者要求，下載安裝與對話測試維持暫停；沒有以本次上傳宣稱完整產品驗收通過。
+這是原始碼公開快照，Windows 預覽安裝包與對應驗證紀錄已提供於 GitHub Releases。
+預覽版的測試範圍不代表完整產品驗收通過；已知限制請參閱對應 Release 說明。
 原創程式及品牌資產保留權利，公開儲存庫本身不構成開源授權。
 第三方模型、程式與資料仍適用各自原授權；技術來源紀錄與產品一般回答分開保存。
