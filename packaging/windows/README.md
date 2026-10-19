@@ -32,6 +32,11 @@ python -m unittest discover -s packaging/windows -p test_engine.py -v
 Use a new release tag in `build_release.py` for a new build. Publish all assets
 and verify their GitHub digests before making the draft visible. Do not replace
 assets under an existing published tag: the bootstrap EXE embeds their hashes.
+For a bootstrap-only patch, pass `--payload-manifest` to the manifest phase
+with the prior verified manifest. Its immutable payload URLs/hashes are retained
+while the bootstrap version changes. The shortcut implementation uses direct
+COM commands and does not require executing a `.ps1` file. Isolated acceptance
+tests may use `--shortcut-dir` to avoid writing to the user's desktop.
 
 `GhostReflex-Setup.exe` installs per user at `%LOCALAPPDATA%\GhostReflex_System`,
 downloads public GitHub assets without authentication, verifies SHA256,

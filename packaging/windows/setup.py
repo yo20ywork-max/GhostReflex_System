@@ -17,7 +17,7 @@ from engine import Installer, Job, Cancelled
 ASSETS = Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parent))
 
 
-def shortcuts(root, installer):
+def shortcuts(root, installer, shortcut_dir=None):
     target = root / 'GhostReflex-Setup.exe'
     if not getattr(sys, 'frozen', False):
         return
@@ -25,19 +25,18 @@ def shortcuts(root, installer):
         shutil.copy2(sys.executable, target)
     def quote(value):
         return "'" + str(value).replace("'", "''") + "'"
-    script = root / 'create-shortcuts.ps1'
-    script.write_text("$shell = New-Object -ComObject WScript.Shell\n"
-        "$places = @($shell.SpecialFolders.Item('Desktop'), $shell.SpecialFolders.Item('Programs'))\n"
+    if shortcut_dir is not None:
+        shortcut_dir.mkdir(parents=True, exist_ok=True)
+    places = ('@(' + quote(shortcut_dir.resolve()) + ')') if shortcut_dir is not None else "@($shell.SpecialFolders.Item('Desktop'), $shell.SpecialFolders.Item('Programs'))"
+    script = ("$ErrorActionPreference = 'Stop'\n$shell = New-Object -ComObject WScript.Shell\n"
+        "$places = " + places + "\n"
         "foreach ($place in $places) {\n"
         "  $link = $shell.CreateShortcut((Join-Path $place 'GhostReflex.lnk'))\n"
         "  $link.TargetPath = " + quote(target) + "\n"
         "  $link.Arguments = '--root '+[char]34+" + quote(root) + "+[char]34\n"
         "  $link.WorkingDirectory = " + quote(root) + "\n"
-        "  $link.Save()\n}\n", encoding='utf-8-sig')
-    try:
-        installer.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-File', str(script)], timeout=30)
-    finally:
-        script.unlink(missing_ok=True)
+        "  $link.Save()\n}\n")
+    installer.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-Command', script], timeout=30)
 
 
 def main():
@@ -46,6 +45,7 @@ def main():
     parser.add_argument('--no-auto', action='store_true', help='Show controls without starting')
     parser.add_argument('--install-only', action='store_true', help='Install, check and stop owned processes')
     parser.add_argument('--no-shortcuts', action='store_true', help='Use for isolated verification installs')
+    parser.add_argument('--shortcut-dir', type=Path, help='Write verification shortcuts inside this directory')
     args = parser.parse_args()
     config = json.loads((ASSETS / 'release.json').read_text(encoding='utf8'))
     target = (args.root or Path(os.environ['LOCALAPPDATA']) / 'GhostReflex_System').resolve()
@@ -68,7 +68,7 @@ def main():
     if args.install_only:
         try:
             worker.install()
-            if not args.no_shortcuts: shortcuts(target, worker)
+            if not args.no_shortcuts: shortcuts(target, worker, args.shortcut_dir)
             return 0
         except Exception as exc:
             (target / 'setup-error.txt').write_text(str(exc), encoding='utf8')
@@ -126,7 +126,7 @@ def main():
                 except (OSError, ValueError): current = {}
                 if current.get('version') != config['version']:
                     worker.install()
-                    if not args.no_shortcuts: shortcuts(target, worker)
+                    if not args.no_shortcuts: shortcuts(target, worker, args.shortcut_dir)
                 log = target / 'agent.log'
                 log_offset = log.stat().st_size if log.exists() else 0
                 worker.step('啟動中文語音，正在載入及校準麥克風…')

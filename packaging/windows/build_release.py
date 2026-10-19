@@ -11,7 +11,7 @@ import zipfile
 from engine import digest, download
 
 REPO = 'yo20ywork-max/GhostReflex_System'
-VERSION = 'v0.1.0-windows-20261019'
+VERSION = 'v0.1.1-windows-20261019'
 BASE = '60e05f2100071479f596b964f89f510f057ce397ea22f2833a0cfe029bfc2463'
 
 
@@ -27,6 +27,7 @@ def main():
     parser.add_argument('phase', choices=['prepare', 'models', 'app', 'manifest'])
     parser.add_argument('--local', type=Path, required=True)
     parser.add_argument('--delivery', type=Path, required=True)
+    parser.add_argument('--payload-manifest', type=Path, help='Reuse immutable payloads for a bootstrap-only patch')
     args = parser.parse_args()
     source = Path(__file__).resolve().parents[2]
     local = args.local.resolve()
@@ -99,6 +100,13 @@ def main():
                 except OSError: pass
         zip_tree(app, release / 'GhostReflex-App.zip')
     elif args.phase == 'manifest':
+        if args.payload_manifest:
+            config=json.loads(args.payload_manifest.read_text(encoding='utf8'))
+            config['payload_version']=config.get('payload_version',config['version'])
+            config['version']=VERSION
+            (release/'release.json').write_text(json.dumps(config,ensure_ascii=False,indent=2),encoding='utf8')
+            print('Bootstrap-only manifest complete',flush=True)
+            return
         url = f'https://github.com/{REPO}/releases/download/{VERSION}/'
         def asset(name, label):
             file = release / name
